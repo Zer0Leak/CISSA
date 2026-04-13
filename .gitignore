@@ -1,0 +1,75 @@
+.venv
+
+# =========================
+# LibreOffice / OpenOffice
+# =========================
+
+# Temporary lock files created while a document is open
+.~lock.*#
+
+# Autosave / backup files
+*.bak
+*.tmp
+*.swp
+*.swo
+*~
+
+# Sometimes LibreOffice leaves recovery/temp files
+.~*
+# optional: comment out if you actually want to keep hidden files
+# .*
+
+# =========================
+# LaTeX / PS / TeX auxiliary files
+# =========================
+
+*.aux
+*.log
+*.out
+*.toc
+*.nav
+*.snm
+*.vrb
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.synctex(busy)
+*.bbl
+*.blg
+*.bcf
+*.run.xml
+*.lof
+*.lot
+*.lol
+*.idx
+*.ilg
+*.ind
+*.xdv
+*.dvi
+
+# latexmk
+latexmkrc.local
+
+# =========================
+# PSfrag / pstex / epstopdf style generated files
+# =========================
+
+*-eps-converted-to.pdf
+*.pstex
+*.pstex_t
+*.pdf_tex
+*.ps_tex
+*.eps_tex
+
+# =========================
+# Beamer / presentation extras
+# =========================
+
+*.thm
+
+# =========================
+# OS/editor junk
+# =========================
+
+.DS_Store
+Thumbs.db
