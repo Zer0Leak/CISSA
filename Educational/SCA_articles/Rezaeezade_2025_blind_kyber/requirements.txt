@@ -3,3 +3,4 @@ ipykernel
 matplotlib
 plotly
 nbformat
+scikit-learn
