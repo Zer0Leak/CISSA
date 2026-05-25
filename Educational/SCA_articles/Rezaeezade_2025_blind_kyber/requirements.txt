@@ -4,3 +4,6 @@ matplotlib
 plotly
 nbformat
 scikit-learn
+# TensorFlow GPU wheels are intended for Linux/WSL2 CUDA environments.
+# If pip cannot find a TensorFlow wheel, use a TensorFlow-supported Python version.
+tensorflow[and-cuda]
