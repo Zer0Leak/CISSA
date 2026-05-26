@@ -1,3 +1,5 @@
 Datasets.zip
 Datasets
 .venv-tf/
+Results/
+__pycache__/

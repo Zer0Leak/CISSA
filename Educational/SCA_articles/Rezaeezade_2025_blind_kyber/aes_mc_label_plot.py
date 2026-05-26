@@ -123,3 +123,41 @@ def plot_mc_label_diagnostics(true_h_m, predicted_h_m, true_h_y, predicted_h_y):
     colorbar = fig.colorbar(image, ax=axes, shrink=0.85)
     colorbar.set_label("row-normalized fraction")
     return fig, axes
+
+
+def _accuracy_values(metrics):
+    return [
+        float(metrics.get("h_m", metrics.get("accuracy_h_m"))),
+        float(metrics.get("h_y", metrics.get("accuracy_h_y"))),
+        float(metrics.get("joint", metrics.get("joint_accuracy"))),
+    ]
+
+
+def plot_mc_accuracy_comparison(training_accuracy_by_variant, attack_accuracy_by_method=None):
+    import matplotlib.pyplot as plt
+
+    panels = [("MC-labeling slice", training_accuracy_by_variant)]
+    if attack_accuracy_by_method:
+        panels.append(("attack slice", attack_accuracy_by_method))
+
+    fig, axes = plt.subplots(1, len(panels), figsize=(6.2 * len(panels), 4.4), constrained_layout=True)
+    axes = np.atleast_1d(axes)
+    metric_names = ["h_m", "h_y", "joint"]
+    x_positions = np.arange(len(metric_names), dtype=np.float64)
+
+    for axis, (title, accuracy_by_name) in zip(axes, panels, strict=False):
+        names = list(accuracy_by_name)
+        bar_width = min(0.36, 0.80 / max(len(names), 1))
+        for index, name in enumerate(names):
+            offsets = x_positions - (bar_width * (len(names) - 1) / 2.0) + index * bar_width
+            bars = axis.bar(offsets, _accuracy_values(accuracy_by_name[name]), width=bar_width, label=name)
+            axis.bar_label(bars, fmt="%.3f", padding=2, fontsize=8)
+        axis.set_title(title)
+        axis.set_xticks(x_positions)
+        axis.set_xticklabels(metric_names)
+        axis.set_ylabel("accuracy against true labels")
+        axis.set_ylim(0.0, 1.0)
+        axis.grid(axis="y", alpha=0.25)
+        axis.legend(frameon=True)
+
+    return fig, axes
