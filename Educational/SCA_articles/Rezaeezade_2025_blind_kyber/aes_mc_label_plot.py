@@ -28,18 +28,58 @@ def plot_mc_feature_preparation(raw_feature_matrix, aligned_feature_matrix, num_
     return fig, axes
 
 
-def plot_mc_cluster_size_distribution(cluster_sizes):
+def plot_mc_cluster_size_distribution(
+    cluster_sizes,
+    expected_cluster_sizes=None,
+    model_prior_cluster_sizes=None,
+    title_prefix=None,
+):
     import matplotlib.pyplot as plt
 
     cluster_sizes = np.asarray(cluster_sizes, dtype=np.int64)
     sorted_sizes = np.sort(cluster_sizes)[::-1]
+    expected_sorted_sizes = None
+    if expected_cluster_sizes is not None:
+        expected_sorted_sizes = np.sort(np.asarray(expected_cluster_sizes, dtype=np.float64).reshape(-1))[::-1]
+        if expected_sorted_sizes.shape != sorted_sizes.shape:
+            raise ValueError("expected_cluster_sizes must have the same number of clusters as cluster_sizes.")
+    model_prior_sorted_sizes = None
+    if model_prior_cluster_sizes is not None:
+        model_prior_sorted_sizes = np.sort(np.asarray(model_prior_cluster_sizes, dtype=np.float64).reshape(-1))[::-1]
+        if model_prior_sorted_sizes.shape != sorted_sizes.shape:
+            raise ValueError("model_prior_cluster_sizes must have the same number of clusters as cluster_sizes.")
     fig, axes = plt.subplots(1, 2, figsize=(14, 4.5), constrained_layout=True)
     axes[0].bar(np.arange(cluster_sizes.size), cluster_sizes, color="#1f77b4")
-    axes[0].set_title("Cluster sizes in GMM order")
+    axes[0].set_title("Cluster sizes in GMM order" if title_prefix is None else f"{title_prefix}: cluster sizes in GMM order")
     axes[0].set_xlabel("cluster index")
     axes[0].set_ylabel("number of traces")
-    axes[1].bar(np.arange(sorted_sizes.size), sorted_sizes, color="#ff7f0e")
-    axes[1].set_title("Cluster sizes sorted largest to smallest")
+    x_positions = np.arange(sorted_sizes.size)
+    axes[1].bar(x_positions, sorted_sizes, color="#ff7f0e", alpha=0.78, label="observed GMM cluster size")
+    if expected_sorted_sizes is not None:
+        axes[1].plot(
+            x_positions,
+            expected_sorted_sizes,
+            color="black",
+            linestyle="--",
+            linewidth=2.0,
+            label="expected binomial joint size",
+        )
+    if model_prior_sorted_sizes is not None:
+        axes[1].plot(
+            x_positions,
+            model_prior_sorted_sizes,
+            color="#2ca02c",
+            linestyle="-",
+            linewidth=1.8,
+            label="GMM prior size",
+        )
+    if expected_sorted_sizes is not None or model_prior_sorted_sizes is not None:
+        axes[1].legend(frameon=True)
+    axes[1].set_title(
+        "Cluster sizes sorted largest to smallest"
+        if title_prefix is None
+        else f"{title_prefix}: cluster sizes sorted largest to smallest"
+    )
     axes[1].set_xlabel("ranked cluster index")
     axes[1].set_ylabel("number of traces")
     return fig, axes
