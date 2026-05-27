@@ -170,9 +170,10 @@ def infer_single_attack_key_byte(key_matrix, byte_index=0):
     return int(unique_keys[0])
 
 
-def load_chipwhisperer_dataset(dataset_dir, invert_trace_polarity=True, max_rows=None):
+def load_chipwhisperer_dataset(dataset_dir, trace_file_name="traces.npy", invert_trace_polarity=True, max_rows=None):
     dataset_dir = Path(dataset_dir)
-    traces = np.load(dataset_dir / "traces.npy")
+    trace_path = dataset_dir / trace_file_name
+    traces = np.load(trace_path)
     plaintexts = np.load(dataset_dir / "plain.npy")
     keys = np.load(dataset_dir / "key.npy")
     labels = np.load(dataset_dir / "labels.npy")
@@ -187,6 +188,7 @@ def load_chipwhisperer_dataset(dataset_dir, invert_trace_polarity=True, max_rows
         "keys": keys[:common_rows],
         "labels": labels[:common_rows],
         "inverted": bool(invert_trace_polarity),
+        "trace_file_name": trace_path.name,
     }
 
 
