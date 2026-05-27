@@ -193,13 +193,23 @@ def load_chipwhisperer_dataset(dataset_dir, trace_file_name="traces.npy", invert
 
 
 def display_notebook_figure(fig):
+    def close_matplotlib_figure(candidate):
+        try:
+            import matplotlib.pyplot as plt
+        except ImportError:
+            return
+        if hasattr(candidate, "canvas") and hasattr(candidate, "savefig"):
+            plt.close(candidate)
+
     try:
         from IPython.display import HTML, display
     except ImportError:
         if hasattr(fig, "show"):
             fig.show()
+        close_matplotlib_figure(fig)
         return
     if hasattr(fig, "to_html"):
         display(HTML(fig.to_html(full_html=False, include_plotlyjs=True)))
     else:
         display(fig)
+        close_matplotlib_figure(fig)
